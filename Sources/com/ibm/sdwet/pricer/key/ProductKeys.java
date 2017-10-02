@@ -69,15 +69,20 @@ public class ProductKeys implements Iterable <ProductKey>
 	
 	private class ProductIterator implements Iterator<ProductKey> {
 		
-		private int							hashCode;
+		private Product						product;
 		private int							partitionBase;
-		private int							row = 0;
+		private int							column = 0;
 		
 		
-		private ProductIterator()
+		private ProductIterator(
+			Product							theProduct
+			)
 		{
-			hashCode = ProductKeys.this.product.id.hashCode();
-			partitionBase = GridGeometry.mod(hashCode, GridGeometry.columns);
+			product = theProduct;
+			
+			partitionBase = GridGeometry.mod(
+					product.id.hashCode(), GridGeometry.rows
+					) * GridGeometry.columns;
 		}
 
 		/**
@@ -88,7 +93,7 @@ public class ProductKeys implements Iterable <ProductKey>
 		@Override
 		public boolean hasNext()
 		{
-			return row < GridGeometry.rows;
+			return column < GridGeometry.columns;
 		}
 
 		/**
@@ -101,7 +106,9 @@ public class ProductKeys implements Iterable <ProductKey>
 		{
 			if (!hasNext ()) return null;
 			
-			return new ProductKey (product, partitionBase + (GridGeometry.columns * row++));
+			return new ProductKey (
+					product, partitionBase + column++
+					);
 			
 		}
 
@@ -132,6 +139,6 @@ public class ProductKeys implements Iterable <ProductKey>
 	@Override
 	public Iterator<ProductKey> iterator()
 	{
-			return new ProductIterator ();
+			return new ProductIterator (product);
 	}
 }

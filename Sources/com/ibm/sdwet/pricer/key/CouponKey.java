@@ -39,8 +39,15 @@ public class CouponKey
 		)
 	{
 		super (
-			theCoupon.id.hashCode(),
-			(Integer) theCustomerKey.ibmGetPartition());
+			theCoupon.id,
+			(Integer) theCustomerKey.ibmGetPartition()
+			);
 	}
 
+	@Override
+	public String toString()
+	{
+		return super.toString();
+	}
+	
 }

@@ -66,15 +66,19 @@ public class CustomerKeys implements Iterable<CustomerKey> {
 	
 	private class CustomerIterator implements Iterator<CustomerKey> {
 		
-		private int							hashCode;
+		private Customer					customer;
 		private int							partitionBase;
-		private int							column = 0;
+		private int							row = 0;
 		
 		
-		private CustomerIterator()
+		private CustomerIterator(
+			Customer						theCustomer
+			)
 		{
-			hashCode = CustomerKeys.this.customer.id.hashCode();
-			partitionBase = GridGeometry.mod(hashCode, GridGeometry.rows) * GridGeometry.columns;
+			customer = theCustomer;
+			partitionBase = GridGeometry.mod(
+					customer.id.hashCode(), GridGeometry.columns
+					);
 		}
 
 		/**
@@ -85,7 +89,7 @@ public class CustomerKeys implements Iterable<CustomerKey> {
 		@Override
 		public boolean hasNext()
 		{
-			return column < GridGeometry.columns;
+			return row < GridGeometry.rows;
 		}
 
 		/**
@@ -97,8 +101,10 @@ public class CustomerKeys implements Iterable<CustomerKey> {
 		public CustomerKey next()
 		{
 			if (!hasNext ()) return null;
-			return new CustomerKey (CustomerKeys.this.customer, partitionBase + column++);
-			
+			CustomerKey customerKey = new CustomerKey (
+					customer, partitionBase + (GridGeometry.columns * row++)
+					);
+			return customerKey ;
 		}
 
 		/**
@@ -129,6 +135,6 @@ public class CustomerKeys implements Iterable<CustomerKey> {
 	@Override
 	public Iterator<CustomerKey> iterator()
 	{
-			return new CustomerIterator ();
+			return new CustomerIterator (customer);
 	}
 }

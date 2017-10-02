@@ -34,4 +34,9 @@ public class Coupon implements Serializable
 		productId = theProductId;
 		discount = theDiscount;
 	}
+	
+	public String toString ()
+	{
+		return "{"+ id + "," + customerId + "," + productId + "," + discount + "}" ;		
+	}
 }

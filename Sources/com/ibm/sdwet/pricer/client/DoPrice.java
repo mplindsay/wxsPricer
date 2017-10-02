@@ -20,6 +20,7 @@ import com.ibm.sdwet.pricer.object.BestPrice;
 import com.ibm.sdwet.wxs.client.Grid;
 import com.ibm.sdwet.wxs.client.GridException;
 import com.ibm.websphere.objectgrid.datagrid.AgentManager;
+import com.ibm.ws.objectgrid.datagrid.EntryErrorValueImpl;
 
 /**
  * This command handling class will compute a <code>BestPrice</code> for the
@@ -64,27 +65,47 @@ public class DoPrice
 										theStatement.quantity
 										);
 
-			Vector<BestPriceKey> keys = new Vector<BestPriceKey> ();
-			keys.add(agent.getBestPriceKey());
-			
-			System.out.println ("go fetch " + theStatement.customerId + "'s best price " 
+			System.out.println ("fetch " + theStatement.customerId + "'s best price " 
 					+ " for " + theStatement.quantity + " " + theStatement.productId + "(s)"
 					);
+			
+			BestPriceKey key = agent.getBestPriceKey ();
+			Vector<BestPriceKey> keys = new Vector<BestPriceKey> ();
+			keys.add(key);
 			
 			AgentManager am = Grid.getMap("Customer").getAgentManager();
 			
 			@SuppressWarnings("unchecked")
 			Map<BestPriceKey, BestPrice> responseMap
-											= (Map<BestPriceKey, BestPrice>) (am.callMapAgent(agent, keys));
+									= (Map<BestPriceKey, BestPrice>) (am.callMapAgent(agent, keys));
 			
-			for (BestPrice best: responseMap.values())
+			for (Object object: responseMap.values())
+			if (object.getClass().getSimpleName().equals("BestPrice"))
 			{
+				BestPrice best = (BestPrice) object;
+				
 				System.out.printf (
 					"The list price for the " + theStatement.productId + " is $%,.2f%n", best.listPrice
 					);
 				System.out.printf (
 					"The %d%% discounted price is $%,.2f (%s)%n",
 						best.discount, best.discountedPrice, best.code
+					);
+			}
+			else if (object.getClass().getSimpleName().equals("EntryErrorValueImpl"))
+			{
+				EntryErrorValueImpl error = (EntryErrorValueImpl) object;
+				
+				System.err.println (
+					"At " + error.getServerName() + "[" + error.getPartition() + "] "
+					+ "Exception: " + error.getErrorExceptionString()
+				);
+			}
+			else
+			{
+				System.err.println(
+					"Unexpected object " + object.getClass().getName() + " " +
+					"returned by PricerGrid"
 					);
 			}
 		}

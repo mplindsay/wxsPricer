@@ -12,6 +12,7 @@
 package com.ibm.sdwet.pricer.client;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import com.ibm.sdwet.pricer.key.CouponKey;
@@ -22,7 +23,6 @@ import com.ibm.sdwet.pricer.key.ProductKey;
 import com.ibm.sdwet.pricer.key.ProductKeys;
 import com.ibm.sdwet.pricer.object.Coupon;
 import com.ibm.sdwet.pricer.object.Customer;
-//	import com.ibm.sdwet.pricer.object.Mode;
 import com.ibm.sdwet.pricer.object.Offer;
 import com.ibm.sdwet.pricer.object.Product;
 import com.ibm.sdwet.pricer.object.Rank;
@@ -121,6 +121,7 @@ public class DoLoad
 	 */
 	private static void loadCustomers () throws GridException
 	{
+
 		for (Customer customer: customers)
 		try
 		{
@@ -130,10 +131,14 @@ public class DoLoad
 				Grid.getMap("Customer").put(customerKey, customer);
 
 				List<Coupon> coupons = createCoupons (customer);
+				Hashtable<CouponKey, Coupon> keyAndCoupon = new Hashtable<CouponKey, Coupon> ();
+				
 				for (Coupon coupon: coupons)
-					Grid.getMap("Coupon").put(
-									new CouponKey (coupon, customerKey),
-									coupon);
+					keyAndCoupon.put(
+							new CouponKey (coupon, customerKey), coupon
+							);
+				
+				Grid.getMap("Coupon").putAll (keyAndCoupon);
 			}
 		}
 		catch (GridException ge)
@@ -201,18 +206,20 @@ public class DoLoad
 		for (Product product: products)
 		try
 		{
-			List<Offer> offers = createOffers (product);
-			ProductKeys productKeys = new ProductKeys (product);
-
+			ProductKeys productKeys = new ProductKeys(product);
 			for (ProductKey productKey: productKeys)
 			{
 				Grid.getMap("Product").put(productKey, product);
+
+				List<Offer> offers = createOffers (product);
+				Hashtable<OfferKey, Offer> keyAndOffer = new Hashtable<OfferKey, Offer> ();
 				
 				for (Offer offer: offers)
-					Grid.getMap ("Offer").put(
-						new OfferKey (offer, productKey), offer
-					);
-					
+					keyAndOffer.put(
+							new OfferKey (offer, productKey), offer
+							);
+				
+				Grid.getMap("Offer").putAll (keyAndOffer);
 			}
 		}
 		catch (GridException ge)

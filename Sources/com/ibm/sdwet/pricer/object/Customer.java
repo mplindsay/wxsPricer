@@ -44,4 +44,9 @@ public class Customer
 		rank = theRank;
 	}
 
+	public String toString ()
+	{
+		return "{"+ id + "," + rank  + "}" ;		
+
+	}
 }

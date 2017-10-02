@@ -11,6 +11,7 @@
 
 package com.ibm.sdwet.pricer.agent;
 
+import java.io.Serializable;
 import com.ibm.sdwet.pricer.key.GridGeometry;
 import com.ibm.websphere.objectgrid.plugins.PartitionableKey;
 
@@ -27,9 +28,17 @@ import com.ibm.websphere.objectgrid.plugins.PartitionableKey;
  * @see GridGeometry
  */
 public class BestPriceKey
-	implements PartitionableKey
+	implements PartitionableKey, Serializable
 {
-	private int							partition;
+	private static final long serialVersionUID = 1L;
+	
+	private String						customerId;
+	private String						productId;
+	
+	private int							column;
+	private int							row;
+	
+	private Integer						partition;
 
 	/**
 	 * The method will compute a column for <code>theCustomerId</code>
@@ -45,17 +54,18 @@ public class BestPriceKey
 		String	 						theProductId
 		)
 	{
-		int column= GridGeometry.mod (
-				theCustomerId.hashCode(), GridGeometry.columns
+		customerId = theCustomerId;
+		productId = theProductId;
+		
+		column= GridGeometry.mod (
+				customerId.hashCode(), GridGeometry.columns
 				);
 
-		int row = GridGeometry.mod (
-				theProductId.hashCode(), GridGeometry.rows
+		row = GridGeometry.mod (
+				productId.hashCode(), GridGeometry.rows
 				);
 
-		int p = (row * GridGeometry.columns) + column;
-
-		partition = new Integer (p);
+		partition = new Integer (column + (row * GridGeometry.columns));
 	}
 
 	/**
@@ -67,7 +77,15 @@ public class BestPriceKey
 	@Override
 	public Object ibmGetPartition ()
 	{
-		return new Integer (partition);
+		return partition;
+	}
+	
+	public String toString ()
+	{
+		return "BasePriceKey: "
+					+ customerId + "(" + column + "), "
+					+ productId + "(" + row + ") "
+					+ "partition: " + partition.intValue();
 	}
 
 }

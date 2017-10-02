@@ -49,9 +49,16 @@ public class ProductKey
 		)
 	{
 		super (
-			theProduct.id.hashCode(),
+			theProduct.id,
 			new Integer(thePartition)
 			);
+	}
+
+
+	@Override
+	public String toString()
+	{
+		return super.toString();
 	}
 
 }

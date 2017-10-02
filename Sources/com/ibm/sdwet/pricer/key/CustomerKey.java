@@ -50,9 +50,15 @@ public class CustomerKey
 		)
 	{
 		super (
-			theCustomer.id.hashCode(),
+			theCustomer.id,
 			new Integer (thePartition)
 			);
+	}
+
+	@Override
+	public String toString()
+	{
+		return super.toString();
 	}
 
 }

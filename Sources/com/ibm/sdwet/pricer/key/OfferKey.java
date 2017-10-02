@@ -38,8 +38,16 @@ public class OfferKey
 		)
 	{
 		super (
-			theOffer.id.hashCode(),
+			theOffer.id,
 			(Integer) theProductKey.ibmGetPartition()
 			);
 	}
+	
+
+	@Override
+	public String toString()
+	{
+		return super.toString();
+	}
+	
 }

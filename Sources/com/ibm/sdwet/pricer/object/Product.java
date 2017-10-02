@@ -43,4 +43,10 @@ public class Product
 		id = theProductId;
 		listPrice = theListPrice;
 	}
+	
+	public String toString ()
+	{
+		return "{"+ id + "," + listPrice + "}" ;		
+
+	}
 }

@@ -11,6 +11,7 @@
 
 package com.ibm.sdwet.pricer.key;
 
+import java.io.Serializable; 
 import com.ibm.websphere.objectgrid.plugins.PartitionableKey;
 
 /**
@@ -19,17 +20,21 @@ import com.ibm.websphere.objectgrid.plugins.PartitionableKey;
  */
 
 
-public class PricerKeyBase implements PartitionableKey {
+public class PricerKeyBase implements PartitionableKey, Serializable {
 
-	private int							hashCode;
+	private static final long serialVersionUID = 1L;
+	
+	
+	private String						keyString;
 	private Integer						partition;
 	
 	/**
 	 * The null constructor generates a key. No one should do this.
 	 */
-	protected PricerKeyBase ()
+	@SuppressWarnings("unused")
+	private PricerKeyBase ()
 	{
-		hashCode = 0;
+		keyString = null;
 		partition = null;
 	}
 	
@@ -40,30 +45,40 @@ public class PricerKeyBase implements PartitionableKey {
 	 * @param theHashCode is the int value to be returned as this keys <code>hashCode()</code> value
 	 * @param thePartition is the Integer value to be returned as this keys <code>ibmGetPartition()</code> value
 	 */
+
 	protected PricerKeyBase (
-		int								theHashCode,
+		String							theKeyString,
 		Integer							thePartition
 		)
 	{
-		hashCode = theHashCode;
+		keyString = theKeyString;
 		partition = thePartition;
 	}
-
+	
 	
 	@Override
 	/**
-	 * WXS needs our int hashCode
+	 * WXS needs our keyObject.hashCode
 	 */
-	public int hashCode (){
-		return hashCode;
+	public int hashCode ()
+	{
+		return keyString.hashCode();
 	}
+	
 	
 	@Override
 	/**
 	 * WXS needs the Object which hashCode() is the partition number
 	 */
-	public Object ibmGetPartition() {
+	public Object ibmGetPartition()
+	{
 		return partition;
 	}
 
+	
+	
+	public String toString ()
+	{
+		return keyString ;
+	}
 }

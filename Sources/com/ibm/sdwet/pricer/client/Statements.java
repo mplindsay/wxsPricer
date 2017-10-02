@@ -151,7 +151,7 @@ public class Statements
 	private static void usage ()
 	{
 		System.out.println ("load");
-		System.out.println ("price <customerId> <materialId> [ <quantity> ]");
+		System.out.println ("price <customerId> <productId> [ <quantity> ]");
 		System.out.println ("sizes");
 		System.out.println ("list <map>");
 		System.out.println ("clear");

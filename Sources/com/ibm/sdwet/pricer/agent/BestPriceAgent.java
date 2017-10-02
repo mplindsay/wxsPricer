@@ -112,13 +112,13 @@ public class BestPriceAgent
 	 * @return a BestPrice to be returned to the client in a <code>java.util.Map</code>
 	 */
 	@Override
-	public Object process(
+	public Object process (
 		Session							theSession,
 		ObjectMap						theMap,
 		Object							theKey
 		)
 	{
-		
+
 		//
 		// get the customer's rank, GOLD or SILVER or BRONZE, and the product's
 		// list price
@@ -135,6 +135,8 @@ public class BestPriceAgent
 		float							listPrice;
 
 		try {
+			
+			System.out.println("query: " + selectCoupon);
 			
 			ObjectQuery query = theSession.createObjectQuery (selectCoupon);
 			Object[] singleResult = (Object[]) query.getSingleResult();

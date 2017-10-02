@@ -57,15 +57,15 @@ public class Statement
 	}
 	
 	public Statement (
-			Type							theType,
-			String							theMap,
-			String							theKey
-			)
-		{
-			type = theType;
-			map = theMap;
-			key = theKey;
-		}
+		Type							theType,
+		String							theMap,
+		String							theKey
+		)
+	{
+		type = theType;
+		map = theMap;
+		key = theKey;
+	}
 	
 	public Type							type;
 	
@@ -75,5 +75,12 @@ public class Statement
 	
 	public String						map;
 	public String						key;
+	
+	public String toString ()
+	{
+		return type + ", map: " + map + ", key: " + key + ", " +
+					"customerId: " + customerId + ", productId: " + productId + ", "
+					+ "quantity: " + quantity ;
+	}
 
 }

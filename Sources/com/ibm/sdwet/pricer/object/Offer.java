@@ -34,4 +34,9 @@ public class Offer implements Serializable
 		rank = theRank;
 		discount = theDiscount;
 	}
+	
+	public String toString ()
+	{
+		return "{"+ id + "," + productId + "," + rank + "," + discount + "}" ;		
+	}
 }
